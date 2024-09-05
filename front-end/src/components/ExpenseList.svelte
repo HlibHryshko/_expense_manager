@@ -1,11 +1,5 @@
 <script>
-    // Example expense data, will be replaced later with dynamic data.
-    let expenses = [
-        { id: 1, title: 'Groceries', amount: 50.25, date: '2024-09-01' },
-        { id: 2, title: 'Electricity Bill', amount: 100.00, date: '2024-09-03' },
-        { id: 3, title: 'Internet', amount: 75.00, date: '2024-09-04' },
-        { id: 4, title: 'Coffee', amount: 5.50, date: '2024-09-05' }
-    ];
+  export let expenses = [];
 </script>
 
 <style>
@@ -41,7 +35,7 @@
 </style>
 
 <ul>
-    {#each expenses as expense}
+    {#each expenses as expense (expense.id)}
         <li>
             <span class="expense-title">{expense.title}</span>
             <span class="expense-date">{expense.date}</span>
