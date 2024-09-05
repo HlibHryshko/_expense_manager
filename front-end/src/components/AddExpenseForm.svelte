@@ -1,27 +1,22 @@
 <script>
-    // Props to pass the data back to the parent component (App.svelte)
-    export let onAddExpense;
+    import { addExpense } from '../stores/expenses.js';
 
-    // Form data
     let title = '';
     let amount = '';
     let date = '';
     
-    // Handle form submission
     function submitExpense() {
         if (title && amount && date) {
             // Create a new expense object
             const newExpense = {
-                id: Date.now(), // Unique ID using the timestamp
+                id: Date.now(),
                 title,
                 amount: parseFloat(amount),
                 date
             };
             
-            // Pass the new expense back to the parent component
-            onAddExpense(newExpense);
+            addExpense(newExpense);
 
-            // Clear the form
             title = '';
             amount = '';
             date = '';

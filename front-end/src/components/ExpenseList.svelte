@@ -1,5 +1,5 @@
 <script>
-  export let expenses = [];
+   import { expenses } from '../stores/expenses.js';
 </script>
 
 <style>
@@ -35,7 +35,7 @@
 </style>
 
 <ul>
-    {#each expenses as expense (expense.id)}
+    {#each $expenses as expense (expense.id)}
         <li>
             <span class="expense-title">{expense.title}</span>
             <span class="expense-date">{expense.date}</span>
