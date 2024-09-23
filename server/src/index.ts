@@ -1,28 +1,29 @@
-import * as dotenv from "dotenv";
-import express, { Application } from "express";
-import { ApolloServer } from "apollo-server-express";
-import { typeDefs, resolvers } from "./graphql/schema";
+import express, { Application, Request, Response } from "express";
+import dotenv from "dotenv";
+import authRoutes from "./routes/authRoutes";
+import transactionRoutes from "./routes/transactionRoutes";
+import connectToDB from "./config/db_configuration";
 
+// Load environment variables
 dotenv.config();
 
 const app: Application = express();
+const PORT = process.env.PORT || 5000;
 
-async function startServer() {
-  const server = new ApolloServer({ typeDefs, resolvers });
+// Middleware
+app.use(express.json()); // For parsing JSON requests
 
-  // Start the Apollo Server before applying middleware
-  await server.start();
+app.use("/api/auth", authRoutes);
+app.use("/api/transactions", transactionRoutes);
 
-  // @ts-ignore
-  server.applyMiddleware({ app });
+// Root route
+app.get("/", (req: Request, res: Response) => {
+  res.send("Expense Tracker API");
+});
 
-  const PORT = process.env.PORT || 4000;
+connectToDB();
 
-  app.listen(PORT, () => {
-    console.log(
-      `Server is running on http://localhost:${PORT}${server.graphqlPath}`
-    );
-  });
-}
-
-startServer();
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
