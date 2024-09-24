@@ -9,7 +9,7 @@ interface RegisterRequest {
   password: string;
 }
 
-export const registerUser = async (req: Request, res: Response) => {
+export const signUpUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   try {
     const userExists = await Person.findOne({ email });
@@ -28,4 +28,8 @@ export const registerUser = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
+};
+
+export const signInUser = async (req: Request, res: Response) => {
+  res.status(200).json({ success: true });
 };
