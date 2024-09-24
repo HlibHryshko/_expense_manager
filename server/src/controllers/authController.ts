@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { IPerson, Person } from "../models/Person";
 import bcrypt from "bcryptjs";
 import { signJwt } from "../utils/jwt";
-import { log } from "console";
 
 interface RegisterRequest {
   name: string;
