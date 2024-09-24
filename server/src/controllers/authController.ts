@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { IPerson, Person } from "../models/Person";
 import bcrypt from "bcryptjs";
 import { signJwt } from "../utils/jwt";
+import { log } from "console";
 
 interface RegisterRequest {
   name: string;
@@ -23,11 +24,7 @@ export const registerUser = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
     });
-
-    if (typeof newUser._id !== "string") {
-      throw new Error("wrong id type");
-    }
-    const token = signJwt(newUser._id);
+    const token = signJwt(newUser._id!.toString());
     res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
