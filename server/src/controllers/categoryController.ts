@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Transaction } from "../models/Transaction";
 import { Category, ICategory } from "../models/Category";
 import { Person } from "../models/Person";
+import { log } from "console";
 
 interface AuthenticatedRequest extends Request {
   user?: any; // Replace 'any' with your actual user type
@@ -64,5 +65,62 @@ export const getAllCategories = async (
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getCategoryExpenses = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  const { startDate, endDate } = req.query;
+
+  try {
+    if (!req.user) {
+      res.status(500).json({ message: "User is not Authenticated" });
+    }
+
+    // Aggregation pipeline to calculate total amount spent per category
+    const categoryExpenses = await Transaction.aggregate([
+      {
+        $match: {
+          // Filter transactions by date range and user
+          date: {
+            $gte: new Date(startDate as string),
+            $lte: new Date(endDate as string),
+          },
+          user: req.user!.id, // Only get the logged-in user's transactions
+        },
+      },
+      {
+        $group: {
+          _id: "$category", // Group by category ID
+          totalAmount: { $sum: "$amount" }, // Calculate the total sum of amounts per category
+        },
+      },
+      {
+        $lookup: {
+          from: "categories", // Reference the 'categories' collection
+          localField: "_id", // The category ID in the transactions
+          foreignField: "_id", // The _id in the categories collection
+          as: "categoryDetails", // Alias for the joined data
+        },
+      },
+      {
+        $unwind: "$categoryDetails", // Flatten the categoryDetails array
+      },
+      {
+        $project: {
+          _id: 0,
+          categoryId: "$_id", // include the default MongoDB ID
+          category: "$categoryDetails.name", // Include the category name from the lookup
+          totalAmount: 1, // Include the total amount field
+        },
+      },
+    ]);
+
+    res.status(200).json(categoryExpenses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
   }
 };
