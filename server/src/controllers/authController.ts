@@ -3,13 +3,13 @@ import { IPerson, Person } from "../models/Person";
 import bcrypt from "bcryptjs";
 import { signJwt } from "../utils/jwt";
 
-interface SignUpRequest {
+interface RegisterRequest {
   name: string;
   email: string;
   password: string;
 }
 
-interface SignInRequest {
+interface LoginRequest {
   email: string;
   password: string;
 }
