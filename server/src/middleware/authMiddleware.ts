@@ -23,8 +23,16 @@ export const protect = (
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET!);
 
+      if (typeof decoded !== "string" && "id" in decoded) {
+        if (!decoded.id) {
+          throw new Error("user info is not found");
+        }
+      } else {
+        throw new Error("Invalid token payload");
+      }
+
       // Attach the user data (decoded token) to the request object
-      req.user = decoded.toString();
+      req.user = decoded.id;
 
       next(); // Call the next middleware
     } catch (error) {
