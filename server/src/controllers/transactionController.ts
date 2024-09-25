@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { Transaction } from "../models/Transaction";
 import { Person } from "../models/Person";
+import { Category } from "../models/Category";
 
 interface AuthenticatedRequest extends Request {
-  user?: any; // Replace 'any' with your actual user type
+  user?: string;
 }
 
 interface CreateRequest {
@@ -41,6 +42,19 @@ export const createTransaction = async (
       await Transaction.findByIdAndDelete(newTransaction._id);
       return res.status(404).json({ message: "User not found" });
     }
+
+    // Add transaction to the category's list of transactions
+    const updatedCategory = await Category.findByIdAndUpdate(
+      category,
+      { $push: { transactions: newTransaction._id } },
+      { new: true }
+    );
+
+    if (!updatedCategory) {
+      await Transaction.findByIdAndDelete(newTransaction._id);
+      return res.status(404).json({ message: "Category not found" });
+    }
+
     res.status(201).json(newTransaction);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
