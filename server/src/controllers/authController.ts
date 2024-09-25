@@ -14,7 +14,7 @@ interface SignInRequest {
   password: string;
 }
 
-export const signUpUser = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body as SignUpRequest;
   try {
     const userExists = await Person.findOne({ email });
@@ -35,7 +35,7 @@ export const signUpUser = async (req: Request, res: Response) => {
   }
 };
 
-export const signInUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body as SignInRequest;
   try {
     // Check if the user exists
