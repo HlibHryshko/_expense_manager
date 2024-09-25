@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
 import connectToDB from "./config/db_configuration";
 
 // Load environment variables
@@ -15,6 +16,7 @@ app.use(express.json()); // For parsing JSON requests
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Root route
 app.get("/", (req: Request, res: Response) => {
