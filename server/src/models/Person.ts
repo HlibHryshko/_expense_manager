@@ -5,6 +5,7 @@ export interface IPerson extends Document {
   email: string;
   password: string;
   transactions: mongoose.Types.ObjectId[];
+  categories: mongoose.Types.ObjectId[];
 }
 
 const PersonSchema: Schema = new Schema({
@@ -12,6 +13,7 @@ const PersonSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Transaction" }],
+  categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
 });
 
 export const Person = mongoose.model<IPerson>("Person", PersonSchema);
