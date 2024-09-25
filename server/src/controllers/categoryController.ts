@@ -7,37 +7,35 @@ interface AuthenticatedRequest extends Request {
   user?: any; // Replace 'any' with your actual user type
 }
 
+interface CreateRequest {
+  name: string;
+  icon: string;
+}
+
 export const createCategory = async (
   req: AuthenticatedRequest,
   res: Response
 ) => {
-  const { amount, category, description, date } = req.body;
+  const { name, icon }: CreateRequest = req.body;
   try {
-    const newCategory: ICategory = await Category.create(category);
-
     if (!req.user) {
       res.status(500).json({ message: "User is not Authenticated" });
     }
 
-    const newTransaction = await Transaction.create({
-      amount,
-      date,
-      category: newCategory._id,
-      description,
-    });
+    const newCategory = await Category.create({ name, icon });
 
-    // Add transaction to the person's list of transactions
+    // Add category to the person's list of categories
     const updatedPerson = await Person.findByIdAndUpdate(
       req.user,
-      { $push: { transactions: newTransaction._id } },
+      { $push: { categories: newCategory._id } },
       { new: true }
     );
 
     if (!updatedPerson) {
-      await Transaction.findByIdAndDelete(newTransaction._id);
+      await Category.findByIdAndDelete(newCategory._id);
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(201).json(newTransaction);
+    res.status(201).json(newCategory);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
