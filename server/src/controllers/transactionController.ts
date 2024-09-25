@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { Transaction } from "../models/Transaction";
-import { Person } from "../models/Person";
+import { IPerson, Person } from "../models/Person";
 import { Category } from "../models/Category";
+import { Model } from "mongoose";
 
 interface AuthenticatedRequest extends Request {
   user?: string;
@@ -56,6 +57,34 @@ export const createTransaction = async (
     }
 
     res.status(201).json(newTransaction);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getAllTransactions = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    if (!req.user) {
+      res.status(500).json({ message: "User is not Authenticated" });
+    }
+
+    const user = await Person.findOne({ _id: req.user });
+
+    if (!user) {
+      // Handle case where user is not found
+      return;
+    }
+
+    const transactions = await Transaction.find({
+      _id: { $in: user.transactions },
+    })
+      .sort({ date: -1 })
+      .populate("category", "name icon");
+
+    res.status(200).json(transactions);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
