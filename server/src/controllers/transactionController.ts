@@ -1,20 +1,24 @@
 import { Request, Response } from "express";
 import { Transaction } from "../models/Transaction";
-import { Category, ICategory } from "../models/Category";
 import { Person } from "../models/Person";
 
 interface AuthenticatedRequest extends Request {
   user?: any; // Replace 'any' with your actual user type
 }
 
+interface CreateRequest {
+  amount: number;
+  category: string;
+  date: Date;
+  description: string;
+}
+
 export const createTransaction = async (
   req: AuthenticatedRequest,
   res: Response
 ) => {
-  const { amount, category, description, date } = req.body;
+  const { amount, category, description, date }: CreateRequest = req.body;
   try {
-    const newCategory: ICategory = await Category.create(category);
-
     if (!req.user) {
       res.status(500).json({ message: "User is not Authenticated" });
     }
@@ -22,7 +26,7 @@ export const createTransaction = async (
     const newTransaction = await Transaction.create({
       amount,
       date,
-      category: newCategory._id,
+      category,
       description,
     });
 
