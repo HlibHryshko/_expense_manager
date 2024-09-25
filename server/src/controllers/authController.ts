@@ -15,7 +15,7 @@ interface LoginRequest {
 }
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body as SignUpRequest;
+  const { name, email, password } = req.body as RegisterRequest;
   try {
     const userExists = await Person.findOne({ email });
     if (userExists) {
@@ -36,7 +36,7 @@ export const registerUser = async (req: Request, res: Response) => {
 };
 
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body as SignInRequest;
+  const { email, password } = req.body as LoginRequest;
   try {
     // Check if the user exists
     const user: IPerson | null = await Person.findOne({ email });
