@@ -3,14 +3,19 @@ import { IPerson, Person } from "../models/Person";
 import bcrypt from "bcryptjs";
 import { signJwt } from "../utils/jwt";
 
-interface RegisterRequest {
+interface SignUpRequest {
   name: string;
   email: string;
   password: string;
 }
 
+interface SignInRequest {
+  email: string;
+  password: string;
+}
+
 export const signUpUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password } = req.body as SignUpRequest;
   try {
     const userExists = await Person.findOne({ email });
     if (userExists) {
@@ -31,5 +36,26 @@ export const signUpUser = async (req: Request, res: Response) => {
 };
 
 export const signInUser = async (req: Request, res: Response) => {
-  res.status(200).json({ success: true });
+  const { email, password } = req.body as SignInRequest;
+  try {
+    // Check if the user exists
+    const user: IPerson | null = await Person.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    // Compare the password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT
+    const token = signJwt(user._id!.toString());
+
+    // Respond with the token
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };
