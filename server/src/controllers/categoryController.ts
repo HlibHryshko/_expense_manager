@@ -40,3 +40,29 @@ export const createCategory = async (
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getAllCategories = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    if (!req.user) {
+      res.status(500).json({ message: "User is not Authenticated" });
+    }
+
+    const user = await Person.findOne({ _id: req.user });
+
+    if (!user) {
+      // Handle case where user is not found
+      return;
+    }
+
+    const categories = await Category.find({
+      _id: { $in: user.categories },
+    });
+
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
