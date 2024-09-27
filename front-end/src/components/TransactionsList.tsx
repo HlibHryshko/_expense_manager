@@ -1,6 +1,6 @@
 // src/components/ExpenseList.tsx
 import React, { useEffect } from "react";
-import { fetchExpenses } from "../store/slices/expensesSlice";
+import { fetchExpenses } from "../store/slices/transactionSlice";
 import { RootState } from "../store";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useSelector } from "react-redux";
