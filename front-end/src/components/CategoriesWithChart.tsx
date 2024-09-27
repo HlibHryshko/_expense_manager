@@ -7,6 +7,7 @@ import { RootState } from "../store";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { useAppDispatch } from "../hooks/useAppDispatch";
+import CreateCategoryForm from "./CreateCategoryForm";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -29,7 +30,7 @@ const CategoriesWithChart: React.FC = () => {
 
   console.log(categories.length);
 
-  const categoriesData = categories.map((category) => category.category);
+  const categoriesData = categories.map((category) => category.name);
   const categoriesData2 = categories.map((category) => category.totalAmount);
 
   // Prepare data for the Pie chart
@@ -69,12 +70,13 @@ const CategoriesWithChart: React.FC = () => {
       <div className="mt-6">
         <ul className="list-disc">
           {categories.map((category) => (
-            <li key={category.categoryId} className="text-lg">
-              {category.category}: ${category.totalAmount.toFixed(2)}
+            <li key={category._id} className="text-lg">
+              {category.name}: ${category.totalAmount.toFixed(2)}
             </li>
           ))}
         </ul>
       </div>
+      <CreateCategoryForm />
     </div>
   );
 };
