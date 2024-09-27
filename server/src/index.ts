@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import connectToDB from "./config/db_configuration";
+import cors from "cors";
 
 // Load environment variables
 dotenv.config();
@@ -14,13 +15,14 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json()); // For parsing JSON requests
 
+app.use(cors());
+
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/categories", categoryRoutes);
 
-// Root route
-app.get("/", (req: Request, res: Response) => {
-  res.send("Expense Tracker API");
+app.get("/api/test", (req: Request, res: Response) => {
+  res.status(200).send("Expense Tracker API is listening");
 });
 
 connectToDB();
