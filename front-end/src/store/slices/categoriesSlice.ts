@@ -4,8 +4,8 @@ import axios from "axios";
 const token = "";
 
 type Category = {
-  categoryId: string;
-  category: string;
+  _id: string;
+  name: string;
   totalAmount: number;
 };
 
@@ -20,6 +20,24 @@ const initialState: CategoriesState = {
   loading: false,
   error: null,
 };
+
+// Thunk to create a new category
+export const createCategory = createAsyncThunk(
+  "categories/createCategory",
+  async (categoryData: { name: string; icon: string }) => {
+    const response = await axios.post(
+      "http://localhost:5000/api/categories", // Your API endpoint for creating categories
+      categoryData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add authorization token
+        },
+      }
+    );
+
+    return response.data;
+  }
+);
 
 // Thunk to fetch categories and their expenses for a given time frame
 export const fetchCategories = createAsyncThunk(
