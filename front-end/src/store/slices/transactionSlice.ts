@@ -4,7 +4,7 @@ import axios from "axios";
 
 const token = "";
 
-type Expense = {
+type Transaction = {
   _id: string;
   description: string;
   amount: number;
@@ -16,21 +16,21 @@ type Expense = {
   };
 };
 
-interface ExpensesState {
-  expenses: Expense[];
+interface TransactionsState {
+  transactions: Transaction[];
   loading: boolean;
   error: string | null;
 }
 
-const initialState: ExpensesState = {
-  expenses: [],
+const initialState: TransactionsState = {
+  transactions: [],
   loading: false,
   error: null,
 };
 
 // Fetch expenses thunk
-export const fetchExpenses = createAsyncThunk(
-  "expenses/fetchExpenses",
+export const fetchTransactions = createAsyncThunk(
+  "transactions/fetchTransactions",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
@@ -43,30 +43,30 @@ export const fetchExpenses = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error || "Failed to fetch expenses");
+      return rejectWithValue(error || "Failed to fetch transactions");
     }
   }
 );
 
-const expensesSlice = createSlice({
-  name: "expenses",
+const transactionsSlice = createSlice({
+  name: "transactions",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchExpenses.pending, (state) => {
+      .addCase(fetchTransactions.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchExpenses.fulfilled, (state, action) => {
+      .addCase(fetchTransactions.fulfilled, (state, action) => {
         state.loading = false;
-        state.expenses = action.payload; // Populate the expenses list
+        state.transactions = action.payload; // Populate the expenses list
       })
-      .addCase(fetchExpenses.rejected, (state, action) => {
+      .addCase(fetchTransactions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message as string;
       });
   },
 });
 
-export default expensesSlice.reducer;
+export default transactionsSlice.reducer;
