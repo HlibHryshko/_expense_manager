@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { token } from "../requestToken";
 
 interface Expense {
   name: string;
@@ -23,6 +22,8 @@ const initialState: ExpensesState = {
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
   async (timeFrame: { startDate: string; endDate: string }) => {
+    const token = localStorage.getItem("token");
+
     const response = await axios.get(
       `http://localhost:5000/api/categories/expenses`,
       {

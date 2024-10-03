@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { token } from "../requestToken";
 
 interface Category {
   _id: string;
@@ -24,6 +23,8 @@ const initialState: CategoriesState = {
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
   async (categoryData: { name: string; icon: string }) => {
+    const token = localStorage.getItem("token");
+
     const response = await axios.post(
       "http://localhost:5000/api/categories", // Your API endpoint for creating categories
       categoryData,
@@ -42,6 +43,8 @@ export const createCategory = createAsyncThunk(
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async () => {
+    const token = localStorage.getItem("token");
+
     const response = await axios.get(`http://localhost:5000/api/categories`, {
       headers: {
         Authorization: `Bearer ${token}`,

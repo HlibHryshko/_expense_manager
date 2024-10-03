@@ -1,7 +1,6 @@
 // src/store/slices/expensesSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { token } from "../requestToken";
 
 interface Transaction {
   _id: string;
@@ -39,6 +38,8 @@ export const fetchTransactions = createAsyncThunk(
   "transactions/fetchTransactions",
   async (_, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("token");
+
       const response = await axios.get(
         "http://localhost:5000/api/transactions",
         {
@@ -59,6 +60,8 @@ export const createTransaction = createAsyncThunk(
   "transactions/createTransaction",
   async (newTransaction: CreateTransaction, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("token");
+
       const response = await axios.post(
         "http://localhost:5000/api/transactions",
         newTransaction,
