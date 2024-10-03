@@ -1,10 +1,9 @@
 // src/store/slices/expensesSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { token } from "../requestToken";
 
-const token = "";
-
-type Transaction = {
+interface Transaction {
   _id: string;
   description: string;
   amount: number;
@@ -14,7 +13,16 @@ type Transaction = {
     name: string;
     icon: string;
   };
-};
+}
+
+interface CreateTransaction {
+  description: string;
+  amount: number;
+  date: string;
+  category: {
+    name: string;
+  };
+}
 
 interface TransactionsState {
   transactions: Transaction[];
@@ -28,7 +36,7 @@ const initialState: TransactionsState = {
   error: null,
 };
 
-// Fetch expenses thunk
+// Fetch transactions thunk
 export const fetchTransactions = createAsyncThunk(
   "transactions/fetchTransactions",
   async (_, { rejectWithValue }) => {
@@ -48,6 +56,23 @@ export const fetchTransactions = createAsyncThunk(
   }
 );
 
+// Create transaction thunk
+export const createTransaction = createAsyncThunk(
+  "transactions/createTransaction",
+  async (newTransaction: CreateTransaction, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/api/transactions", newTransaction, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error || "Failed to create a transaction");
+    }
+  }
+);
+
 const transactionsSlice = createSlice({
   name: "transactions",
   initialState,
@@ -60,9 +85,17 @@ const transactionsSlice = createSlice({
       })
       .addCase(fetchTransactions.fulfilled, (state, action) => {
         state.loading = false;
-        state.transactions = action.payload; // Populate the expenses list
+        state.transactions = action.payload;
       })
       .addCase(fetchTransactions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message as string;
+      })
+      .addCase(createTransaction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createTransaction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message as string;
       });
