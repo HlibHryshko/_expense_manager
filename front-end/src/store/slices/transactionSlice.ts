@@ -19,9 +19,7 @@ interface CreateTransaction {
   description: string;
   amount: number;
   date: string;
-  category: {
-    name: string;
-  };
+  category: string;
 }
 
 interface TransactionsState {
@@ -61,11 +59,15 @@ export const createTransaction = createAsyncThunk(
   "transactions/createTransaction",
   async (newTransaction: CreateTransaction, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/transactions", newTransaction, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/transactions",
+        newTransaction,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error || "Failed to create a transaction");
