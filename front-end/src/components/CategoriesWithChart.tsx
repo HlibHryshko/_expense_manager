@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { fetchCategories } from "../store/slices/categoriesSlice";
+import { fetchExpenses } from "../store/slices/expensesSlice";
 import { RootState } from "../store";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
@@ -13,8 +13,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CategoriesWithChart: React.FC = () => {
   const dispatch = useAppDispatch(); // Use the custom hook instead of useDispatch
-  const { categories, loading, error } = useSelector(
-    (state: RootState) => state.categories
+  const { expenses, loading, error } = useSelector(
+    (state: RootState) => state.expenses
   );
 
   useEffect(() => {
@@ -22,23 +22,20 @@ const CategoriesWithChart: React.FC = () => {
 
     const startDate = "2024-01-01"; // example date
     const endDate = "2024-09-30"; // example date
-    dispatch(fetchCategories({ startDate, endDate }));
+    dispatch(fetchExpenses({ startDate, endDate }));
   }, [dispatch]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  console.log(categories.length);
-
-  const categoriesData = categories.map((category) => category.name);
-  const categoriesData2 = categories.map((category) => category.totalAmount);
+  console.log(expenses.length);
 
   // Prepare data for the Pie chart
   const pieData = {
-    labels: categoriesData,
+    labels: expenses.map((expense) => expense.name),
     datasets: [
       {
-        data: categoriesData2,
+        data: expenses.map((expense) => expense.totalAmount),
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
@@ -69,9 +66,9 @@ const CategoriesWithChart: React.FC = () => {
 
       <div className="mt-6">
         <ul className="list-disc">
-          {categories.map((category) => (
-            <li key={category._id} className="text-lg">
-              {category.name}: ${category.totalAmount.toFixed(2)}
+          {expenses.map((expense) => (
+            <li key={expense.name} className="text-lg">
+              {expense.name}: ${expense.totalAmount.toFixed(2)}
             </li>
           ))}
         </ul>
