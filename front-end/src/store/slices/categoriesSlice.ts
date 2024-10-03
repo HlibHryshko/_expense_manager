@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { token } from "../requestToken";
 
-const token = "";
-
-type Category = {
+interface Category {
   _id: string;
   name: string;
-  totalAmount: number;
-};
+  icon: string;
+}
 
 interface CategoriesState {
   categories: Category[];
@@ -39,19 +38,15 @@ export const createCategory = createAsyncThunk(
   }
 );
 
-// Thunk to fetch categories and their expenses for a given time frame
+// Thunk to fetch categories
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async (timeFrame: { startDate: string; endDate: string }) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/categories/expenses`,
-      {
-        params: timeFrame,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  async () => {
+    const response = await axios.get(`http://localhost:5000/api/categories`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log(response.data);
 
     return response.data;
@@ -75,6 +70,14 @@ const categoriesSlice = createSlice({
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch categories";
+      })
+      .addCase(createCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to create a new category";
       });
   },
 });
