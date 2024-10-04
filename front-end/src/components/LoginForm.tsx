@@ -5,6 +5,7 @@ import { loginUser } from "../store/slices/authSlice";
 import { RootState } from "../store";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/useAppDispatch";
+import { Link } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -65,6 +66,15 @@ const LoginForm: React.FC = () => {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+        <div className="flex justify-around m-2 items-center">
+          <p>Don't have an account?</p>
+          <Link
+            to={"/register"}
+            className="p-1 text-blue-400 hover:text-blue-800"
+          >
+            Create an account
+          </Link>
+        </div>
       </form>
     </div>
   );
