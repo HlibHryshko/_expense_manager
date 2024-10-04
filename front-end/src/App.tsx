@@ -3,6 +3,7 @@ import Dashboard from "./pages/Dashboard";
 import LoginForm from "./components/LoginForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CategoriesWithChart from "./components/CategoriesWithChart";
+import RegisterForm from "./components/RegisterForm";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
         <Route
           path="/dashboard"
           element={
