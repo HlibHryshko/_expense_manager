@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-interface Transaction {
+export interface Transaction {
   _id: string;
   description: string;
   amount: number;
