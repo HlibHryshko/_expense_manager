@@ -1,9 +1,42 @@
 // src/components/ExpenseList.tsx
 import { useEffect } from "react";
-import { fetchTransactions } from "../store/slices/transactionSlice";
+import {
+  fetchTransactions,
+  Transaction,
+} from "../store/slices/transactionSlice";
 import { RootState } from "../store";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useSelector } from "react-redux";
+import SortedTransactionsTable from "./SortedTransactionsTable";
+
+export interface TransactionsConfig {
+  label: string;
+  render: (transaction: Transaction) => string;
+  sortValue: (transaction: Transaction) => string;
+}
+
+const config: TransactionsConfig[] = [
+  {
+    label: "Description",
+    render: (transaction) => transaction.description,
+    sortValue: (transaction) => transaction.description,
+  },
+  {
+    label: "Amount",
+    render: (transaction) => `$${transaction.amount.toFixed(2)}`,
+    sortValue: (transaction) => transaction.amount.toString(),
+  },
+  {
+    label: "Date",
+    render: (transaction) => new Date(transaction.date).toLocaleDateString(),
+    sortValue: (transaction) => transaction.date,
+  },
+  {
+    label: "Category",
+    render: (transaction) => transaction.category.name,
+    sortValue: (transaction) => transaction.category.name,
+  },
+];
 
 const TransactionsList = () => {
   const dispatch = useAppDispatch();
@@ -22,35 +55,7 @@ const TransactionsList = () => {
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-bold mb-4">Transactions List</h2>
-      <table className="min-w-full bg-white border-collapse">
-        <thead>
-          <tr>
-            <th className="py-2 border-b">Description</th>
-            <th className="py-2 border-b">Amount</th>
-            <th className="py-2 border-b">Date</th>
-            <th className="py-2 border-b">Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions &&
-            transactions.map((transaction) => (
-              <tr key={transaction._id}>
-                <td className="py-2 px-4 border-b">
-                  {transaction.description}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  ${transaction.amount.toFixed(2)}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {new Date(transaction.date).toLocaleDateString()}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {transaction.category.name}
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <SortedTransactionsTable config={config} transactions={transactions} />
     </div>
   );
 };
