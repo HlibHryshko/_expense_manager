@@ -6,7 +6,7 @@ const useSort = (data: Transaction[], config: TransactionsConfig[]) => {
   const [sortOrder, setSortOrder] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string | null>(null);
 
-  const setSortLable = (label: string) => {
+  const setSortLabel = (label: string) => {
     if (sortBy !== label) {
       setSortBy(label);
       setSortOrder("asc");
@@ -30,7 +30,7 @@ const useSort = (data: Transaction[], config: TransactionsConfig[]) => {
 
       const isAsc = sortOrder === "asc" ? 1 : -1;
 
-      if (typeof valueA === "string") {
+      if (typeof valueA === "string" && valueB === "string") {
         return isAsc * valueA.localeCompare(valueB);
       } else if (typeof valueA === "number" && typeof valueB === "number") {
         return isAsc * (valueA - valueB);
@@ -40,7 +40,7 @@ const useSort = (data: Transaction[], config: TransactionsConfig[]) => {
     });
   }
 
-  return { setSortLable, sortedData, sortOrder, sortBy };
+  return { setSortLabel, sortedData, sortOrder, sortBy };
 };
 
 export default useSort;
