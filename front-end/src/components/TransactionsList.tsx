@@ -12,7 +12,8 @@ import SortedTransactionsTable from "./SortedTransactionsTable";
 export interface TransactionsConfig {
   label: string;
   render: (transaction: Transaction) => string;
-  sortValue: (transaction: Transaction) => string;
+  sortValue: (transaction: Transaction) => string | number;
+  header?: () => Element | JSX.Element;
 }
 
 const config: TransactionsConfig[] = [
@@ -24,12 +25,12 @@ const config: TransactionsConfig[] = [
   {
     label: "Amount",
     render: (transaction) => `$${transaction.amount.toFixed(2)}`,
-    sortValue: (transaction) => transaction.amount.toString(),
+    sortValue: (transaction) => transaction.amount,
   },
   {
     label: "Date",
     render: (transaction) => new Date(transaction.date).toLocaleDateString(),
-    sortValue: (transaction) => transaction.date,
+    sortValue: (transaction) => new Date(transaction.date).getTime(),
   },
   {
     label: "Category",
@@ -55,7 +56,11 @@ const TransactionsList = () => {
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-bold mb-4">Transactions List</h2>
-      <SortedTransactionsTable config={config} transactions={transactions} />
+      <SortedTransactionsTable
+        config={config}
+        transactions={transactions}
+        generateKey={(transaction) => transaction._id}
+      />
     </div>
   );
 };
