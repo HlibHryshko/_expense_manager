@@ -38,7 +38,7 @@ export const fetchTransactions = createAsyncThunk(
   "transactions/fetchTransactions",
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
 
       const response = await axios.get(
         "http://localhost:5000/api/transactions",
@@ -60,7 +60,7 @@ export const createTransaction = createAsyncThunk(
   "transactions/createTransaction",
   async (newTransaction: CreateTransaction, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
 
       const response = await axios.post(
         "http://localhost:5000/api/transactions",

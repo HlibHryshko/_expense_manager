@@ -20,7 +20,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  token: localStorage.getItem("token"), // Retrieve token if already logged in
+  token: localStorage.getItem("authToken"), // Retrieve token if already logged in
   loading: false,
   error: null,
 };
@@ -38,7 +38,7 @@ export const loginUser = createAsyncThunk(
       console.log(response);
 
       const { token }: { token: string } = response.data; // Assuming your backend returns a token
-      localStorage.setItem("token", token); // Store token in localStorage
+      localStorage.setItem("authToken", token); // Store token in localStorage
       return token;
     } catch (error) {
       return rejectWithValue(error || "Failed to login");
@@ -62,7 +62,7 @@ export const registerUser = createAsyncThunk(
       console.log(response);
 
       const { token }: { token: string } = response.data; // Assuming your backend returns a token
-      localStorage.setItem("token", token); // Store token in localStorage
+      localStorage.setItem("authToken", token); // Store token in localStorage
       return token;
     } catch (error) {
       return rejectWithValue(error || "Failed to register a user");
@@ -76,7 +76,7 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.token = null;
-      localStorage.removeItem("token"); // Remove token on logout
+      localStorage.removeItem("authToken"); // Remove token on logout
     },
   },
   extraReducers: (builder) => {

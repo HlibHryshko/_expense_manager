@@ -22,7 +22,7 @@ const initialState: ExpensesState = {
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
   async (timeFrame: { startDate: string; endDate: string }) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     const response = await axios.get(
       `http://localhost:5000/api/categories/expenses`,

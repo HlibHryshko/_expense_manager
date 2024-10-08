@@ -23,7 +23,7 @@ const initialState: CategoriesState = {
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
   async (categoryData: { name: string; icon: string }) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     const response = await axios.post(
       "http://localhost:5000/api/categories", // Your API endpoint for creating categories
@@ -43,7 +43,7 @@ export const createCategory = createAsyncThunk(
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     const response = await axios.get(`http://localhost:5000/api/categories`, {
       headers: {
