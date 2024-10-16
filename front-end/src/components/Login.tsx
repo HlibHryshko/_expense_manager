@@ -1,23 +1,30 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const handleSuccess = (response: CredentialResponse) => {
-    const token = response.credential;
-    console.log(token);
+  const handleSuccess = async (credentialResponse: CredentialResponse) => {
+    try {
+      const token = credentialResponse.credential;
+      console.log(token);
 
-    const userObject = jwtDecode(token!); // Use jwtDecode function directly
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/oauth/google",
+        {
+          token,
+        }
+      );
 
-    console.log("User: ", userObject);
+      // Store token in local storage (or a more secure alternative)
+      localStorage.setItem("authToken", response.data.token!);
 
-    // Store token in local storage (or a more secure alternative)
-    localStorage.setItem("authToken", token!);
-
-    // Navigate to the dashboard or another page after login
-    navigate("/dashboard");
+      // Navigate to the dashboard or another page after login
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Google OAuth login failed", error);
+    }
   };
 
   const handleFailure = () => {
