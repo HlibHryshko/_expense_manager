@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, RequestHandler } from "express";
 import { protect } from "../middleware/authMiddleware";
 import {
   createCategory,
@@ -8,8 +8,8 @@ import {
 
 const router = Router();
 
-router.post("/", protect, createCategory);
-router.get("/", protect, getAllCategories);
-router.get("/expenses", protect, getCategoryExpenses);
+router.post("/", protect as RequestHandler, createCategory);
+router.get("/", protect as RequestHandler, getAllCategories);
+router.get("/expenses", protect as RequestHandler, getCategoryExpenses);
 
 export default router;
