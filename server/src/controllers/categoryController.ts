@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import { Transaction } from "../models/Transaction";
-import { Category, ICategory } from "../models/Category";
+import { Category } from "../models/Category";
 import { Person } from "../models/Person";
-import { log } from "console";
 
 interface AuthenticatedRequest extends Request {
   user?: any; // Replace 'any' with your actual user type
